@@ -38,6 +38,15 @@ async function main() {
           body: 'Dies ist eine Phishing-Mail <a href="https://example.com">Link</a>' + '<br />'.repeat(200),
           backofficeIdentifier: 'Phishing',
         },
+				{
+					senderMail: 'human@example.com',
+					senderName: 'Human',
+					subject: 'Scheduled mail',
+					headers: '',
+					body: 'Diese Mail wurde gescheduled, nach 5 Sekunden zu erscheinen.' + '<br />'.repeat(200),
+					backofficeIdentifier: 'Scheduled',
+					scheduledTime: 5,
+				},
       ],
     });
 
