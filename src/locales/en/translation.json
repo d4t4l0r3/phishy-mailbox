@@ -75,7 +75,7 @@
         "createEmailManually": "Create Email Manually",
         "editEmailManually": "Edit Email Manually",
         "identifier": "Identifier in the Back Office",
-				"scheduledTime": "Delay in seconds",
+        "scheduledTime": "Delay in seconds",
         "sender": "Sender",
         "senderEmail": "Email",
         "senderName": "Name",

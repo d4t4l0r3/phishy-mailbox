@@ -75,7 +75,7 @@
         "createEmailManually": "E-Mail manuell anlegen",
         "editEmailManually": "E-Mail manuell bearbeiten",
         "identifier": "Identifizierer im Backoffice",
-				"scheduledTime": "Zeitverzögerung in Sekunden",
+        "scheduledTime": "Zeitverzögerung in Sekunden",
         "sender": "Absender",
         "senderEmail": "E-Mail",
         "senderName": "Name",
