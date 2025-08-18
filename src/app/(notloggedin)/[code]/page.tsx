@@ -99,24 +99,32 @@ const SingleEmail: FC<{
     id: email.id,
     disabled: disableDragging,
   });
+  const [scheduledTime, setScheduledTime] = useState<number>(email.email.scheduledTime);
 
-  return (
-    <button
-      type='button'
-      onClick={setAsCurrentEmail}
-      className={twMerge(
-        'flex w-full flex-col border-l-4 px-2 py-2 text-left text-sm hover:!border-l-gray-400',
-        isCurrentEmail ? 'bg-blue-100' : 'bg-gray-50 hover:bg-gray-100',
-        isDragging && 'opacity-0',
-      )}
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-    >
-      <div className='w-full truncate'>{email.email.senderName}</div>
-      <div className={clsx('w-full truncate')}>{email.email.subject}</div>
-    </button>
-  );
+  if (scheduledTime === 0) {
+    return (
+      <button
+        type='button'
+        onClick={setAsCurrentEmail}
+        className={twMerge(
+          'flex w-full flex-col border-l-4 px-2 py-2 text-left text-sm hover:!border-l-gray-400',
+          isCurrentEmail ? 'bg-blue-100' : 'bg-gray-50 hover:bg-gray-100',
+          isDragging && 'opacity-0',
+        )}
+        ref={setNodeRef}
+        {...listeners}
+        {...attributes}
+      >
+        <div className='w-full truncate'>{email.email.senderName}</div>
+        <div className={clsx('w-full truncate')}>{email.email.subject}</div>
+      </button>
+    );
+  } else {
+    setTimeout(() => {
+      setScheduledTime(0);
+    }, scheduledTime * 1000);
+    return;
+  }
 };
 
 const Emails: FC<{
@@ -467,6 +475,7 @@ export default function Run({params: {code}}: {params: {code: string}}) {
             allowExternalImages: false,
             backofficeIdentifier: '',
             headers: '',
+            scheduledTime: 0,
           },
         },
       ];
