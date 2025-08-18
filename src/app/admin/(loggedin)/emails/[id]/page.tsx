@@ -83,6 +83,9 @@ export default function Page({params: {id}}: {params: {id: string}}) {
   }, [getMail.data, isCreate]);
 
   const onSubmit = async (data: Partial<Email>) => {
+    // convert from string to number
+    data.scheduledTime = +data.scheduledTime;
+
     try {
       if (isCreate) {
         await addMail.mutateAsync({email: data as Required<Email>});
@@ -123,7 +126,7 @@ export default function Page({params: {id}}: {params: {id: string}}) {
               rules={{required: true}}
               className='mr-2'
             />
-            <InputField label={t('scheduledTime')} on={builder.fields.scheduledTime} rules={{min: 0}} />
+            <InputField type='number' label={t('scheduledTime')} on={builder.fields.scheduledTime} rules={{min: 0}} />
           </div>
           <fieldset className='flex flex-wrap'>
             <legend className='text-md font-semibold'>{t('sender')}</legend>
