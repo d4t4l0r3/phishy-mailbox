@@ -94,14 +94,18 @@ const SingleEmail: FC<{
   setAsCurrentEmail: () => void;
   isCurrentEmail: boolean;
   disableDragging: boolean;
-}> = ({email, setAsCurrentEmail, isCurrentEmail, disableDragging}) => {
+  startedAt: Date | null;
+}> = ({email, setAsCurrentEmail, isCurrentEmail, disableDragging, startedAt}) => {
   const {attributes, listeners, setNodeRef, isDragging} = useDraggable({
     id: email.id,
     disabled: disableDragging,
   });
-  const [scheduledTime, setScheduledTime] = useState<number>(email.email.scheduledTime);
+  const now = new Date();
+  const msSinceStart = startedAt ? now - startedAt : 0;
+  const [visible, setVisible] = useState<boolean>(msSinceStart >= email.email.scheduledTime * 1000);
+  console.log(msSinceStart);
 
-  if (scheduledTime === 0) {
+  if (visible) {
     return (
       <button
         type='button'
@@ -120,9 +124,12 @@ const SingleEmail: FC<{
       </button>
     );
   } else {
-    setTimeout(() => {
-      setScheduledTime(0);
-    }, scheduledTime * 1000);
+    setTimeout(
+      () => {
+        setVisible(true);
+      },
+      email.email.scheduledTime * 1000 - msSinceStart,
+    );
     return;
   }
 };
@@ -132,7 +139,8 @@ const Emails: FC<{
   currentEmail: EmailItem | undefined;
   setCurrentEmail: (e: EmailItem) => void;
   disableDragging: boolean;
-}> = ({currentFolder, currentEmail, setCurrentEmail, disableDragging}) => {
+  startedAt: Date | null;
+}> = ({currentFolder, currentEmail, setCurrentEmail, disableDragging, startedAt}) => {
   return (
     <div className='flex w-52 flex-shrink-0 flex-col bg-gray-50 shadow'>
       <div className='px-3 leading-loose'>{currentFolder.folder.name}</div>
@@ -144,6 +152,7 @@ const Emails: FC<{
             setAsCurrentEmail={() => setCurrentEmail(e)}
             isCurrentEmail={e.emailId === currentEmail?.emailId}
             disableDragging={disableDragging}
+            startedAt={startedAt}
           />
         ))}
       </div>
@@ -541,6 +550,7 @@ export default function Run({params: {code}}: {params: {code: string}}) {
               setCurrentEmail={setEmail}
               currentEmail={currentEmail}
               disableDragging={requiresStartLinkClick && !didClickStartLink}
+              startedAt={data.startedAt}
             />
             <div className='flex flex-grow flex-col'>
               {currentEmail && (
