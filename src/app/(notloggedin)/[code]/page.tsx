@@ -101,37 +101,44 @@ const SingleEmail: FC<{
     disabled: disableDragging,
   });
   const now = new Date();
-  const msSinceStart = startedAt ? now - startedAt : 0;
+  const msSinceStart = startedAt ? now.getTime() - startedAt.getTime() : 0;
   const [visible, setVisible] = useState<boolean>(msSinceStart >= email.email.scheduledTime * 1000);
-  console.log(msSinceStart);
 
-  if (visible) {
-    return (
-      <button
-        type='button'
-        onClick={setAsCurrentEmail}
-        className={twMerge(
-          'flex w-full flex-col border-l-4 px-2 py-2 text-left text-sm hover:!border-l-gray-400',
-          isCurrentEmail ? 'bg-blue-100' : 'bg-gray-50 hover:bg-gray-100',
-          isDragging && 'opacity-0',
-        )}
-        ref={setNodeRef}
-        {...listeners}
-        {...attributes}
-      >
-        <div className='w-full truncate'>{email.email.senderName}</div>
-        <div className={clsx('w-full truncate')}>{email.email.subject}</div>
-      </button>
-    );
-  } else {
-    setTimeout(
-      () => {
+  useEffect(() => {
+    if (!visible && startedAt) {
+      const delay = email.email.scheduledTime * 1000 - msSinceStart;
+      if (delay > 0) {
+        const timer = setTimeout(() => {
+          setVisible(true);
+        }, delay);
+        return () => clearTimeout(timer);
+      } else {
         setVisible(true);
-      },
-      email.email.scheduledTime * 1000 - msSinceStart,
-    );
-    return;
+      }
+    }
+  }, [visible, startedAt, email.email.scheduledTime, msSinceStart]);
+
+  if (!visible) {
+    return null;
   }
+
+  return (
+    <button
+      type='button'
+      onClick={setAsCurrentEmail}
+      className={twMerge(
+        'flex w-full flex-col border-l-4 px-2 py-2 text-left text-sm hover:!border-l-gray-400',
+        isCurrentEmail ? 'bg-blue-100' : 'bg-gray-50 hover:bg-gray-100',
+        isDragging && 'opacity-0',
+      )}
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+    >
+      <div className='w-full truncate'>{email.email.senderName}</div>
+      <div className={clsx('w-full truncate')}>{email.email.subject}</div>
+    </button>
+  );
 };
 
 const Emails: FC<{
