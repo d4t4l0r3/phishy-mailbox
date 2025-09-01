@@ -157,6 +157,10 @@ export default function PageUpsert({params: {id}}: {params: {id: string}}) {
   }, [getStudy.data, isCreate]);
 
   const onSubmit = async (data: Study & {folder: FormFolder[]; email: FormEmail[]}) => {
+    // convert from string to number
+    for (let i = 0; i < data.email.length; i++) {
+      data.email[i].scheduledTime = +data.email[i].scheduledTime;
+    }
     try {
       if (isCreate) {
         await addStudy.mutateAsync({

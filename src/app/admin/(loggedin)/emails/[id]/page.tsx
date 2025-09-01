@@ -82,9 +82,6 @@ export default function Page({params: {id}}: {params: {id: string}}) {
   }, [getMail.data, isCreate]);
 
   const onSubmit = async (data: Partial<Email>) => {
-    // convert from string to number
-    data.scheduledTime = +data.scheduledTime;
-
     try {
       if (isCreate) {
         await addMail.mutateAsync({email: data as Required<Email>});
