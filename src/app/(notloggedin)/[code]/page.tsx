@@ -102,11 +102,11 @@ const SingleEmail: FC<{
   });
   const now = new Date();
   const msSinceStart = startedAt ? now.getTime() - startedAt.getTime() : 0;
-  const [visible, setVisible] = useState<boolean>(msSinceStart >= email.email.scheduledTime * 1000);
+  const [visible, setVisible] = useState<boolean>(msSinceStart >= email.scheduledTime * 1000);
 
   useEffect(() => {
     if (!visible && startedAt) {
-      const delay = email.email.scheduledTime * 1000 - msSinceStart;
+      const delay = email.scheduledTime * 1000 - msSinceStart;
       if (delay > 0) {
         const timer = setTimeout(() => {
           setVisible(true);
@@ -116,7 +116,7 @@ const SingleEmail: FC<{
         setVisible(true);
       }
     }
-  }, [visible, startedAt, email.email.scheduledTime, msSinceStart]);
+  }, [visible, startedAt, email.scheduledTime, msSinceStart]);
 
   if (!visible) {
     return null;
@@ -453,6 +453,7 @@ export default function Run({params: {code}}: {params: {code: string}}) {
           emailId: introductionEmailId,
           folderId: null,
           participationId: data.id,
+          scheduledTime: 0,
           email: {
             id: introductionEmailId,
             senderMail: '',
@@ -491,7 +492,6 @@ export default function Run({params: {code}}: {params: {code: string}}) {
             allowExternalImages: false,
             backofficeIdentifier: '',
             headers: '',
-            scheduledTime: 0,
           },
         },
       ];

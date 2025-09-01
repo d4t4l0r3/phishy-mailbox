@@ -16,7 +16,6 @@ model Email {
   body                 String
   allowExternalImages  Boolean              @default(false)
   backofficeIdentifier String
-  scheduledTime        Int                  @default(0)
   StudyEmail           StudyEmail[]
   ParticipationEmail   ParticipationEmail[]
 }
@@ -55,6 +54,7 @@ model ParticipationEmail {
   folder          Folder?                   @relation(fields: [folderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participation_email_folder_id_folder_id_fk")
   events          ParticipationEmailEvent[]
   order           Int                       @default(0)
+  scheduledTime   Int                       @default(0)
 }
 
 model ParticipationEmailEvent {
@@ -102,6 +102,7 @@ model StudyEmail {
   emailId String @db.Uuid
   email   Email  @relation(fields: [emailId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "study_email_email_id_email_id_fk")
   order   Int    @default(0)
+  scheduledTime Int @default(0)
 
   @@unique([studyId, emailId])
 }

@@ -116,6 +116,7 @@ export const participationRouter = createTRPCRouter({
               data: participation.study.email.map((email) => ({
                 emailId: email.email.id,
                 order: email.order,
+                scheduledTime: email.scheduledTime,
               })),
             },
           },

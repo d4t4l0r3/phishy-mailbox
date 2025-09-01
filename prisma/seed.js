@@ -45,7 +45,6 @@ async function main() {
           headers: '',
           body: 'Diese Mail wurde gescheduled, nach 5 Sekunden zu erscheinen.' + '<br />'.repeat(200),
           backofficeIdentifier: 'Scheduled',
-          scheduledTime: 5,
         },
       ],
     });
@@ -91,6 +90,7 @@ async function main() {
               },
               {
                 emailId: emails.find((e) => e.backofficeIdentifier === 'Scheduled').id,
+                scheduledTime: 5,
               },
             ],
           },
