@@ -75,7 +75,6 @@
         "createEmailManually": "E-Mail manuell anlegen",
         "editEmailManually": "E-Mail manuell bearbeiten",
         "identifier": "Identifizierer im Backoffice",
-        "scheduledTime": "Zeitverzögerung in Sekunden",
         "sender": "Absender",
         "senderEmail": "E-Mail",
         "senderName": "Name",
@@ -142,6 +141,7 @@
         "htmlIsAllowed": "HTML ist erlaubt",
         "yes": "Ja, Einwilligung vor der Teilnahme abfragen",
         "no": "Nein, keine Einwilligung vor der Teilnahme abfragen",
+        "scheduledTime": "Zeitverzögerung in Sekunden",
 
         "participants": {
           "created": "Erstellt",

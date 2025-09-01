@@ -320,6 +320,7 @@ export default function PageUpsert({params: {id}}: {params: {id: string}}) {
           defaultValue={{
             emailId: null as any, // eslint-disable-line @typescript-eslint/no-explicit-any
             order: builder.fields.email.$useFieldArray().fields.length,
+            scheduledTime: 0,
           }}
           reorder
         >
@@ -334,6 +335,8 @@ export default function PageUpsert({params: {id}}: {params: {id: string}}) {
                 label={t('email')}
                 on={on.emailId}
               />
+
+              <InputField type='number' label={t('scheduledTime')} on={on.scheduledTime} rules={{min: 0}} />
             </div>
           )}
         </MasterDetailView>

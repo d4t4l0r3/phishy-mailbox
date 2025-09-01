@@ -75,7 +75,6 @@
         "createEmailManually": "Create Email Manually",
         "editEmailManually": "Edit Email Manually",
         "identifier": "Identifier in the Back Office",
-        "scheduledTime": "Delay in seconds",
         "sender": "Sender",
         "senderEmail": "Email",
         "senderName": "Name",
@@ -142,6 +141,7 @@
         "htmlIsAllowed": "HTML is allowed",
         "yes": "Yes, ask for consent before participation",
         "no": "No, do not ask for consent before participation",
+        "scheduledTime": "Delay in seconds",
         "participants": {
           "created": "Created",
           "code": "Code",
