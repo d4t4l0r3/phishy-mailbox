@@ -69,11 +69,11 @@ export const studyRouter = createTRPCRouter({
           email: {
             createMany: {
               data: email
-                .filter((e): e is {emailId: string} => !!e.emailId)
+                .filter((e): e is typeof e & {emailId: string} => !!e.emailId)
                 .map((f, i) => ({
                   emailId: f.emailId,
                   order: i,
-                  scheduledTime: 0,
+                  scheduledTime: f.scheduledTime ?? 0,
                 })),
             },
           },
