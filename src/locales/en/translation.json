@@ -141,6 +141,7 @@
         "htmlIsAllowed": "HTML is allowed",
         "yes": "Yes, ask for consent before participation",
         "no": "No, do not ask for consent before participation",
+        "scheduledTime": "Delay in seconds",
         "participants": {
           "created": "Created",
           "code": "Code",

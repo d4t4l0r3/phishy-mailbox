@@ -157,6 +157,10 @@ export default function PageUpsert({params: {id}}: {params: {id: string}}) {
   }, [getStudy.data, isCreate]);
 
   const onSubmit = async (data: Study & {folder: FormFolder[]; email: FormEmail[]}) => {
+    // convert from string to number
+    for (let i = 0; i < data.email.length; i++) {
+      data.email[i].scheduledTime = +data.email[i].scheduledTime;
+    }
     try {
       if (isCreate) {
         await addStudy.mutateAsync({
@@ -320,6 +324,7 @@ export default function PageUpsert({params: {id}}: {params: {id: string}}) {
           defaultValue={{
             emailId: null as any, // eslint-disable-line @typescript-eslint/no-explicit-any
             order: builder.fields.email.$useFieldArray().fields.length,
+            scheduledTime: 0,
           }}
           reorder
         >
@@ -334,6 +339,8 @@ export default function PageUpsert({params: {id}}: {params: {id: string}}) {
                 label={t('email')}
                 on={on.emailId}
               />
+
+              <InputField type='number' label={t('scheduledTime')} on={on.scheduledTime} rules={{min: 0}} />
             </div>
           )}
         </MasterDetailView>

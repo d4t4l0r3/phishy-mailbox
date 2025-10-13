@@ -47,10 +47,49 @@ const SingleFolder: FC<{
   folder: FolderWithEmails;
   setAsCurrentFolder: () => void;
   isCurrentFolder: boolean;
-}> = ({folder, setAsCurrentFolder, isCurrentFolder}) => {
+  startedAt: Date | null;
+}> = ({folder, setAsCurrentFolder, isCurrentFolder, startedAt}) => {
   const {isOver, setNodeRef} = useDroppable({
     id: folder.folder.id,
   });
+
+  const [emailCount, setEmailCount] = useState(0);
+
+  useEffect(() => {
+    const updateCount = () => {
+      const now = new Date();
+      const msSinceStart = startedAt ? now.getTime() - startedAt.getTime() : 0;
+      const count = folder.emails.filter(function (item) {
+        return msSinceStart >= item.scheduledTime * 1000;
+      }).length;
+      setEmailCount(count);
+    };
+
+    updateCount();
+
+    if (!startedAt) {
+      return;
+    }
+
+    // Set up timers for future emails
+    const timers: NodeJS.Timeout[] = [];
+    const now = new Date();
+    const msSinceStart = now.getTime() - startedAt.getTime();
+
+    folder.emails.forEach((email) => {
+      const delay = email.scheduledTime * 1000 - msSinceStart;
+      if (delay > 0) {
+        const timer = setTimeout(() => {
+          updateCount();
+        }, delay);
+        timers.push(timer);
+      }
+    });
+
+    return () => {
+      timers.forEach((timer) => clearTimeout(timer));
+    };
+  }, [folder.emails, startedAt]);
 
   return (
     <button
@@ -63,7 +102,7 @@ const SingleFolder: FC<{
       onClick={setAsCurrentFolder}
       ref={setNodeRef}
     >
-      <span>{folder.folder.name}</span> <span className='ml-auto'>{folder.emails.length}</span>
+      <span>{folder.folder.name}</span> <span className='ml-auto'>{emailCount}</span>
     </button>
   );
 };
@@ -72,7 +111,8 @@ const Folders: FC<{
   folders: FolderWithEmails[];
   setCurrentFolder: (f: Folder) => void;
   currentFolder: FolderWithEmails;
-}> = ({folders, setCurrentFolder, currentFolder}) => {
+  startedAt: Date | null;
+}> = ({folders, setCurrentFolder, currentFolder, startedAt}) => {
   const {t} = useTranslation(undefined, {keyPrefix: 'participants'});
   return (
     <div className='w-40 flex-shrink-0 pl-1 text-sm text-gray-700'>
@@ -83,6 +123,7 @@ const Folders: FC<{
           folder={f}
           setAsCurrentFolder={() => setCurrentFolder(f.folder)}
           isCurrentFolder={f.folder.id === currentFolder.folder.id}
+          startedAt={startedAt}
         />
       ))}
     </div>
@@ -94,11 +135,28 @@ const SingleEmail: FC<{
   setAsCurrentEmail: () => void;
   isCurrentEmail: boolean;
   disableDragging: boolean;
-}> = ({email, setAsCurrentEmail, isCurrentEmail, disableDragging}) => {
+  startedAt: Date | null;
+}> = ({email, setAsCurrentEmail, isCurrentEmail, disableDragging, startedAt}) => {
   const {attributes, listeners, setNodeRef, isDragging} = useDraggable({
     id: email.id,
     disabled: disableDragging,
   });
+  const now = new Date();
+  const msSinceStart = startedAt ? now.getTime() - startedAt.getTime() : 0;
+  const [visible, setVisible] = useState<boolean>(msSinceStart >= email.scheduledTime * 1000);
+
+  useEffect(() => {
+    if (!visible && startedAt) {
+      const delay = email.scheduledTime * 1000 - msSinceStart;
+      if (delay <= 0) {
+        setVisible(true);
+      }
+    }
+  }, [visible, startedAt, email.scheduledTime, msSinceStart]);
+
+  if (!visible) {
+    return null;
+  }
 
   return (
     <button
@@ -124,7 +182,8 @@ const Emails: FC<{
   currentEmail: EmailItem | undefined;
   setCurrentEmail: (e: EmailItem) => void;
   disableDragging: boolean;
-}> = ({currentFolder, currentEmail, setCurrentEmail, disableDragging}) => {
+  startedAt: Date | null;
+}> = ({currentFolder, currentEmail, setCurrentEmail, disableDragging, startedAt}) => {
   return (
     <div className='flex w-52 flex-shrink-0 flex-col bg-gray-50 shadow'>
       <div className='px-3 leading-loose'>{currentFolder.folder.name}</div>
@@ -136,6 +195,7 @@ const Emails: FC<{
             setAsCurrentEmail={() => setCurrentEmail(e)}
             isCurrentEmail={e.emailId === currentEmail?.emailId}
             disableDragging={disableDragging}
+            startedAt={startedAt}
           />
         ))}
       </div>
@@ -429,6 +489,8 @@ export default function Run({params: {code}}: {params: {code: string}}) {
           emailId: introductionEmailId,
           folderId: null,
           participationId: data.id,
+          scheduledTime: 0,
+          order: 0,
           email: {
             id: introductionEmailId,
             senderMail: '',
@@ -526,12 +588,18 @@ export default function Run({params: {code}}: {params: {code: string}}) {
         <div className='flex flex-grow'>
           <div className='w-12 flex-shrink-0 bg-gray-200'></div>
           <div className='mr-4 mt-4 flex flex-grow gap-4'>
-            <Folders folders={foldersWithEmails} setCurrentFolder={setFolder} currentFolder={currentFolder} />
+            <Folders
+              folders={foldersWithEmails}
+              setCurrentFolder={setFolder}
+              currentFolder={currentFolder}
+              startedAt={data.startedAt}
+            />
             <Emails
               currentFolder={currentFolder}
               setCurrentEmail={setEmail}
               currentEmail={currentEmail}
               disableDragging={requiresStartLinkClick && !didClickStartLink}
+              startedAt={data.startedAt}
             />
             <div className='flex flex-grow flex-col'>
               {currentEmail && (

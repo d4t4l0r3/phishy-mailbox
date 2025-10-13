@@ -43,7 +43,7 @@ We welcome contributions from the community. Feel free to open issues and submit
 
 Prerequisites: [Docker](https://www.docker.com/) and [Yarn](https://yarnpkg.com/)
 
-The application consists of two components. The first one is a PostgreSQL database that can be launched after installing docker via running `docker compose up -d` in the root directory.
+The application consists of two components. The first one is a PostgreSQL database that can be launched after installing docker via running `docker compose -f docker-compose.dev.yml up -d` in the root directory.
 
 Afterwards you can run the following commands to start the Next.js server that serves both the spa-frontend as well as the backend API using prisma as the ORM.
 

@@ -115,7 +115,12 @@ export default function Page({params: {id}}: {params: {id: string}}) {
       </Headline>
       <Form builder={builder} onSubmit={onSubmit}>
         <div className='my-2 flex flex-col gap-x-8 gap-y-2'>
-          <InputField label={t('identifier')} on={builder.fields.backofficeIdentifier} rules={{required: true}} />
+          <InputField
+            label={t('identifier')}
+            on={builder.fields.backofficeIdentifier}
+            rules={{required: true}}
+            className='mr-2'
+          />
           <fieldset className='flex flex-wrap'>
             <legend className='text-md font-semibold'>{t('sender')}</legend>
             <div className='flex gap-4'>

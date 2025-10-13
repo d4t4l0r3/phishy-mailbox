@@ -72,7 +72,7 @@ export default [...compat.extends("airbnb/hooks", "prettier"), {
 
         parserOptions: {
             project: "./tsconfig.json",
-            tsconfigRootDir: "/home/enterprize1/Code/phishy-mailbox",
+            tsconfigRootDir: "./",
         },
     },
 

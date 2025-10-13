@@ -45,6 +45,7 @@ export const studyRouter = createTRPCRouter({
               z.object({
                 emailId: z.string().nullable(),
                 order: z.number().optional(),
+                scheduledTime: z.number().optional(),
               }),
             ),
           }),
@@ -68,10 +69,11 @@ export const studyRouter = createTRPCRouter({
           email: {
             createMany: {
               data: email
-                .filter((e): e is {emailId: string} => !!e.emailId)
+                .filter((e): e is typeof e & {emailId: string} => !!e.emailId)
                 .map((f, i) => ({
                   emailId: f.emailId,
                   order: i,
+                  scheduledTime: f.scheduledTime ?? 0,
                 })),
             },
           },
@@ -115,6 +117,7 @@ export const studyRouter = createTRPCRouter({
                 id: z.string().uuid().optional(),
                 emailId: z.string().uuid(),
                 order: z.number(),
+                scheduledTime: z.number(),
               }),
             ),
           }),
@@ -189,6 +192,7 @@ export const studyRouter = createTRPCRouter({
                   data: {
                     emailId: f.emailId,
                     order: email.findIndex((e) => e.id === f.id),
+                    scheduledTime: f.scheduledTime,
                   },
                 })),
               createMany: {
@@ -197,6 +201,7 @@ export const studyRouter = createTRPCRouter({
                   .map((f) => ({
                     emailId: f.emailId,
                     order: email.findIndex((e) => e.id === f.id),
+                    scheduledTime: f.scheduledTime,
                   })),
               },
             },
