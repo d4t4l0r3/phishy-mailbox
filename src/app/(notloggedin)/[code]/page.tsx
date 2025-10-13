@@ -53,11 +53,43 @@ const SingleFolder: FC<{
     id: folder.folder.id,
   });
 
-  const now = new Date();
-  const msSinceStart = startedAt ? now.getTime() - startedAt.getTime() : 0;
-  const emailCount = folder.emails.filter(function (item) {
-    return msSinceStart >= item.scheduledTime * 1000;
-  }).length;
+  const [emailCount, setEmailCount] = useState(0);
+
+  useEffect(() => {
+    const updateCount = () => {
+      const now = new Date();
+      const msSinceStart = startedAt ? now.getTime() - startedAt.getTime() : 0;
+      const count = folder.emails.filter(function (item) {
+        return msSinceStart >= item.scheduledTime * 1000;
+      }).length;
+      setEmailCount(count);
+    };
+
+    updateCount();
+
+    if (!startedAt) {
+      return;
+    }
+
+    // Set up timers for future emails
+    const timers: NodeJS.Timeout[] = [];
+    const now = new Date();
+    const msSinceStart = now.getTime() - startedAt.getTime();
+
+    folder.emails.forEach((email) => {
+      const delay = email.scheduledTime * 1000 - msSinceStart;
+      if (delay > 0) {
+        const timer = setTimeout(() => {
+          updateCount();
+        }, delay);
+        timers.push(timer);
+      }
+    });
+
+    return () => {
+      timers.forEach((timer) => clearTimeout(timer));
+    };
+  }, [folder.emails, startedAt]);
 
   return (
     <button
@@ -104,8 +136,7 @@ const SingleEmail: FC<{
   isCurrentEmail: boolean;
   disableDragging: boolean;
   startedAt: Date | null;
-  updateFolderEmailCounts: () => void;
-}> = ({email, setAsCurrentEmail, isCurrentEmail, disableDragging, startedAt, updateFolderEmailCounts}) => {
+}> = ({email, setAsCurrentEmail, isCurrentEmail, disableDragging, startedAt}) => {
   const {attributes, listeners, setNodeRef, isDragging} = useDraggable({
     id: email.id,
     disabled: disableDragging,
@@ -117,18 +148,11 @@ const SingleEmail: FC<{
   useEffect(() => {
     if (!visible && startedAt) {
       const delay = email.scheduledTime * 1000 - msSinceStart;
-      if (delay > 0) {
-        const timer = setTimeout(() => {
-          setVisible(true);
-          updateFolderEmailCounts();
-        }, delay);
-        return () => clearTimeout(timer);
-      } else {
+      if (delay <= 0) {
         setVisible(true);
-        updateFolderEmailCounts();
       }
     }
-  }, [visible, startedAt, email.scheduledTime, msSinceStart, updateFolderEmailCounts]);
+  }, [visible, startedAt, email.scheduledTime, msSinceStart]);
 
   if (!visible) {
     return null;
@@ -159,8 +183,7 @@ const Emails: FC<{
   setCurrentEmail: (e: EmailItem) => void;
   disableDragging: boolean;
   startedAt: Date | null;
-  updateFolderEmailCounts: () => void;
-}> = ({currentFolder, currentEmail, setCurrentEmail, disableDragging, startedAt, updateFolderEmailCounts}) => {
+}> = ({currentFolder, currentEmail, setCurrentEmail, disableDragging, startedAt}) => {
   return (
     <div className='flex w-52 flex-shrink-0 flex-col bg-gray-50 shadow'>
       <div className='px-3 leading-loose'>{currentFolder.folder.name}</div>
@@ -173,7 +196,6 @@ const Emails: FC<{
             isCurrentEmail={e.emailId === currentEmail?.emailId}
             disableDragging={disableDragging}
             startedAt={startedAt}
-            updateFolderEmailCounts={updateFolderEmailCounts}
           />
         ))}
       </div>
@@ -361,8 +383,6 @@ export default function Run({params: {code}}: {params: {code: string}}) {
   const [currentFolderId, setCurrentFolderId] = useState<string>();
   const [currentEmailId, setCurrentEmailId] = useState<string>();
   const [draggingEmail, setDraggingEmail] = useState<Email | EmailWithFunctionAsBody | undefined>(undefined);
-  const [, updateState] = useState();
-  const updateFolderEmailCounts = useCallback(() => updateState({}), []);
 
   const setFolder = useCallback((folder: Folder) => {
     setCurrentFolderId(folder.id);
@@ -470,6 +490,7 @@ export default function Run({params: {code}}: {params: {code: string}}) {
           folderId: null,
           participationId: data.id,
           scheduledTime: 0,
+          order: 0,
           email: {
             id: introductionEmailId,
             senderMail: '',
@@ -579,7 +600,6 @@ export default function Run({params: {code}}: {params: {code: string}}) {
               currentEmail={currentEmail}
               disableDragging={requiresStartLinkClick && !didClickStartLink}
               startedAt={data.startedAt}
-              updateFolderEmailCounts={updateFolderEmailCounts}
             />
             <div className='flex flex-grow flex-col'>
               {currentEmail && (
