@@ -56,9 +56,9 @@ const EmailDisplayDetails: FC<{headers?: string; onViewDetails?: () => void}> = 
   );
 };
 
-const EmailDisplayReply: FC<{onWriteReply?: () => void}> = ({onWriteReply}) => {
+const EmailDisplayReply: FC<{onWriteReply?: () => void; onSendReply?: () => void}> = ({onWriteReply, onSendReply}) => {
   const {t} = useTranslation(undefined, {keyPrefix: 'components.emailDisplay.reply'});
-  const builder = useFormBuilder<{subject: string; message: string}>({defaultValues: {subject: 'RE', message: ''}});
+  const builder = useFormBuilder<{subject: string; message: string}>({defaultValues: {subject: 'Re: ', message: ''}});
 
   return (
     <Dialog.Root>
@@ -75,7 +75,7 @@ const EmailDisplayReply: FC<{onWriteReply?: () => void}> = ({onWriteReply}) => {
         <Dialog.Content className='fixed left-1/2 top-1/2 z-50 flex max-h-[85vh] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 flex-col bg-white p-6'>
           <Dialog.Title className='m-0 font-bold'>{t('composeNewMessage')}</Dialog.Title>
           <Dialog.Description className='flex-shrink overflow-y-scroll whitespace-pre-wrap'>
-            <Form builder={builder} onSubmit={async () => {}}>
+  <Form builder={builder} onSubmit={async () => onSendReply?.()}>
               <div className='my-2 flex flex-col gap-x-8 gap-y-2'>
                 <InputField label={t('subject')} on={builder.fields.subject} />
               </div>
@@ -109,6 +109,7 @@ export default function EmailDisplay({
   onHover,
   onViewDetails,
   onWriteReply,
+  onSendReply,
   onViewExternalImages,
 }: {
   email: Partial<EmailWithFunctionAsBody>;
@@ -120,6 +121,7 @@ export default function EmailDisplay({
   onHover?: (href: string, text: string) => void;
   onViewDetails?: () => void;
   onWriteReply?: () => void;
+  onSendReply?: () => void;
   onViewExternalImages?: () => void;
 }) {
   const {t} = useTranslation(undefined, {keyPrefix: 'components.emailDisplay'});
