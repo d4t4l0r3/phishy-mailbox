@@ -25,6 +25,8 @@ import {
   EMailViewEvent,
   EMailViewExternalImagesEvent,
   EMailViewDetailsEvent,
+  EmailWriteReplyEvent,
+  EmailSendReplyEvent,
 } from '~/server/api/routers/participationEvents';
 import {useTranslation} from 'react-i18next';
 import {TimerMode} from '.prisma/client';
@@ -648,6 +650,24 @@ export default function Run({params: {code}}: {params: {code: string}}) {
                       event: {
                         type: 'email-details-view',
                       } as EMailViewDetailsEvent,
+                    });
+                  }}
+                  onWriteReply={() => {
+                    trackEventMutation.mutate({
+                      participationId: data.id,
+                      participationEmailId: currentEmail.id,
+                      event: {
+                        type: 'email-write-reply',
+                      } as EMailWriteReplyEvent,
+                    });
+                  }}
+                  onSendReply={() => {
+                    trackEventMutation.mutate({
+                      participationId: data.id,
+                      participationEmailId: currentEmail.id,
+                      event: {
+                        type: 'email-send-reply',
+                      } as EMailSendReplyEvent,
                     });
                   }}
                   onViewExternalImages={() => {
