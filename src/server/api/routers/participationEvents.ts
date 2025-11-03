@@ -44,7 +44,7 @@ export const eMailLinkHoverEvent = z.object({
 export type EMailLinkHoverEvent = z.infer<typeof eMailLinkHoverEvent>;
 
 export const eMailOpenReplyEvent = z.object({
-	type: z.literal('email-open-reply'),
+  type: z.literal('email-open-reply'),
 });
 export type EMailOpenReplyEvent = z.infer<typeof eMailOpenReplyEvent>;
 
@@ -61,7 +61,7 @@ export const participationEvents = z.union([
   eMailScrolledEvent,
   eMailLinkClickEvent,
   eMailLinkHoverEvent,
-	eMailOpenReplyEvent,
+  eMailOpenReplyEvent,
   eMailSendReplyEvent,
 ]);
 export type ParticipationEvents = z.infer<typeof participationEvents>;

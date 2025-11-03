@@ -25,7 +25,7 @@ import {
   EMailViewEvent,
   EMailViewExternalImagesEvent,
   EMailViewDetailsEvent,
-	EmailOpenReplyEvent,
+  EmailOpenReplyEvent,
   EmailSendReplyEvent,
 } from '~/server/api/routers/participationEvents';
 import {useTranslation} from 'react-i18next';
@@ -652,13 +652,13 @@ export default function Run({params: {code}}: {params: {code: string}}) {
                       } as EMailViewDetailsEvent,
                     });
                   }}
-									onOpenReply={() => {
+                  onOpenReply={() => {
                     trackEventMutation.mutate({
                       participationId: data.id,
                       participationEmailId: currentEmail.id,
                       event: {
-												type: 'email-open-reply',
-											} as EMailOpenReplyEvent,
+                        type: 'email-open-reply',
+                      } as EMailOpenReplyEvent,
                     });
                   }}
                   onSendReply={() => {

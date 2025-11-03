@@ -65,7 +65,7 @@ const EmailDisplayReply: FC<{onOpenReply?: () => void; onSendReply?: () => void}
       <Dialog.Trigger asChild>
         <button
           className='self-center rounded-sm border bg-gray-100 px-2 py-1 hover:bg-gray-200'
-					onClick={() => onOpenReply?.()}
+          onClick={() => onOpenReply?.()}
         >
           {t('reply')}
         </button>
@@ -74,20 +74,18 @@ const EmailDisplayReply: FC<{onOpenReply?: () => void; onSendReply?: () => void}
         <Dialog.Overlay className='fixed inset-0 z-50 bg-black/40' />
         <Dialog.Content className='fixed left-1/2 top-1/2 z-50 flex max-h-[85vh] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 flex-col bg-white p-6'>
           <Dialog.Title className='m-0 font-bold'>{t('composeNewMessage')}</Dialog.Title>
-          <Dialog.Description className='flex-shrink overflow-y-scroll whitespace-pre-wrap'>
-  <Form builder={builder} onSubmit={async () => onSendReply?.()}>
-              <div className='my-2 flex flex-col gap-x-8 gap-y-2'>
-                <InputField label={t('subject')} on={builder.fields.subject} />
-              </div>
-              <CodeTextarea label={t('content')} on={builder.fields.message} />
-              <button
-                type='submit'
-                className='mt-4 flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-              >
-                {t('send')}
-              </button>
-            </Form>
-          </Dialog.Description>
+          <Form builder={builder} onSubmit={() => onSendReply?.()}>
+            <div className='my-2 flex flex-col gap-x-8 gap-y-2'>
+              <InputField label={t('subject')} on={builder.fields.subject} />
+            </div>
+            <CodeTextarea label={t('content')} on={builder.fields.message} />
+            <button
+              type='submit'
+              className='mt-4 flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+            >
+              {t('send')}
+            </button>
+          </Form>
           <Dialog.Close asChild>
             <button className='mt-4 flex justify-center self-end rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>
               {t('close')}
@@ -108,7 +106,7 @@ export default function EmailDisplay({
   onClick,
   onHover,
   onViewDetails,
-	onOpenReply,
+  onOpenReply,
   onSendReply,
   onViewExternalImages,
 }: {
@@ -120,7 +118,7 @@ export default function EmailDisplay({
   onClick?: (href: string, text: string) => void;
   onHover?: (href: string, text: string) => void;
   onViewDetails?: () => void;
-	onOpenReply?: () => void;
+  onOpenReply?: () => void;
   onSendReply?: () => void;
   onViewExternalImages?: () => void;
 }) {
@@ -249,7 +247,7 @@ export default function EmailDisplay({
             <div>{t('to')}</div>
           </div>
           <div>
-						<EmailDisplayReply onOpenReply={onOpenReply} onSendReply={onSendReply} />
+            <EmailDisplayReply onOpenReply={onOpenReply} onSendReply={onSendReply} />
             <EmailDisplayDetails headers={email.headers} onViewDetails={onViewDetails} />
           </div>
         </div>
