@@ -50,8 +50,14 @@ export type EMailOpenReplyEvent = z.infer<typeof eMailOpenReplyEvent>;
 
 export const eMailSendReplyEvent = z.object({
   type: z.literal('email-send-reply'),
+  message: z.string(),
 });
 export type EMailSendReplyEvent = z.infer<typeof eMailSendReplyEvent>;
+
+export const eMailAbortReplyEvent = z.object({
+  type: z.literal('email-abort-reply'),
+});
+export type EMailSendReplyEvent = z.infer<typeof eMailAbortReplyEvent>;
 
 export const participationEvents = z.union([
   eMailViewEvent,
@@ -63,6 +69,7 @@ export const participationEvents = z.union([
   eMailLinkHoverEvent,
   eMailOpenReplyEvent,
   eMailSendReplyEvent,
+  eMailAbortReplyEvent,
 ]);
 export type ParticipationEvents = z.infer<typeof participationEvents>;
 

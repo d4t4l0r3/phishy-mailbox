@@ -661,7 +661,17 @@ export default function Run({params: {code}}: {params: {code: string}}) {
                       } as EMailOpenReplyEvent,
                     });
                   }}
-                  onSendReply={() => {
+                  onSendReply={(message) => {
+                    trackEventMutation.mutate({
+                      participationId: data.id,
+                      participationEmailId: currentEmail.id,
+                      event: {
+                        type: 'email-send-reply',
+                        message: message,
+                      } as EMailSendReplyEvent,
+                    });
+                  }}
+                  onAbortReply={() => {
                     trackEventMutation.mutate({
                       participationId: data.id,
                       participationEmailId: currentEmail.id,
