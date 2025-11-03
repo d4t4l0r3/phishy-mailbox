@@ -56,7 +56,7 @@ const EmailDisplayDetails: FC<{headers?: string; onViewDetails?: () => void}> = 
   );
 };
 
-const EmailDisplayReply: FC<{onWriteReply?: () => void; onSendReply?: () => void}> = ({onWriteReply, onSendReply}) => {
+const EmailDisplayReply: FC<{onOpenReply?: () => void; onSendReply?: () => void}> = ({onOpenReply, onSendReply}) => {
   const {t} = useTranslation(undefined, {keyPrefix: 'components.emailDisplay.reply'});
   const builder = useFormBuilder<{subject: string; message: string}>({defaultValues: {subject: 'Re: ', message: ''}});
 
@@ -65,7 +65,7 @@ const EmailDisplayReply: FC<{onWriteReply?: () => void; onSendReply?: () => void
       <Dialog.Trigger asChild>
         <button
           className='self-center rounded-sm border bg-gray-100 px-2 py-1 hover:bg-gray-200'
-          onClick={() => onWriteReply?.()}
+					onClick={() => onOpenReply?.()}
         >
           {t('reply')}
         </button>
@@ -108,7 +108,7 @@ export default function EmailDisplay({
   onClick,
   onHover,
   onViewDetails,
-  onWriteReply,
+	onOpenReply,
   onSendReply,
   onViewExternalImages,
 }: {
@@ -120,7 +120,7 @@ export default function EmailDisplay({
   onClick?: (href: string, text: string) => void;
   onHover?: (href: string, text: string) => void;
   onViewDetails?: () => void;
-  onWriteReply?: () => void;
+	onOpenReply?: () => void;
   onSendReply?: () => void;
   onViewExternalImages?: () => void;
 }) {
@@ -249,7 +249,7 @@ export default function EmailDisplay({
             <div>{t('to')}</div>
           </div>
           <div>
-            <EmailDisplayReply onViewDetails={onWriteReply} />
+						<EmailDisplayReply onOpenReply={onOpenReply} onSendReply={onSendReply} />
             <EmailDisplayDetails headers={email.headers} onViewDetails={onViewDetails} />
           </div>
         </div>
